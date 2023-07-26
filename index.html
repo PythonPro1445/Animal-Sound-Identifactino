@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Animal Identification Web App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>      
+        <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Monoton&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=IBM+Plex+Mono:wght@200&family=Monoton&display=swap" rel="stylesheet">
+  
+    </head>
+    <body>
+        <div class="col-xs-12 header_div text-center">            
+            <h1 id="h1">Animal Sound Identification</h1>
+            <br>            
+        </div>
+        <div class="main_div">
+            <center>
+                <br><br><br><br><br><br><br>
+                
+                <button class="btn btn-warning" onclick="startClassification()" style="width: 150px; font-size: 20px;"> START </button>             
+                <br><br><br>
+                <form>
+                <img src="ear.png" id="ear" width="250" height="250">
+                <br><br><br><br>
+            </form>
+            <br><br>
+            <div>
+                <h3 id="result_label">I Can Hear a </h3>
+                <h3 id="result_confidence">Accuracy Percentage </h3>
+            </div>                           
+            
+            </center>
+            
+   
+                
+                
+            <br><br><br><br><br><br><br><br>
+            <footer class="copy_write_footer">
+                <p id="footer">Developed by Pranav Nair - Netwerk</p>
+            </footer>
+        </div>
+
+        <style>
+            body{
+                background-color: lightblue;  
+                font-family: 'IBM Plex Mono';              
+            }
+
+            #footer {
+                padding-left: 30px;
+                color: green;
+            }
+
+            form {
+                background-color: white;
+                width: 1200px;
+                border-radius: 30px;
+                border-style: solid;
+                border-color: black;                                
+            }
+
+            #h1 {
+                font-family: 'Bungee Spice';
+            }
+
+            .header_div p {
+                font-family: 'IBM Plex Mono';
+                color: grey;
+                letter-spacing: 2px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            .main_div button {
+                font-family: 'IBM Plex Mono';
+                margin-top: 30px;
+                width: 130px;
+                font-weight: bolder;
+                letter-spacing: 3px;
+            }
+
+            .copy_write_footer {
+                position: fixed;
+                color: lightblue;
+                bottom: 0;
+                width: 100%;
+                font-size: 18px;
+                background-color: white;
+                line-height: 3;
+                text-align: center;
+                text-shadow: 5px 5px 5px rgb(151, 149, 149);
+            }
+
+        </style>
+
+        <script>
+
+            function startClassification() 
+            {
+                navigator.mediaDevices.getUserMedia({ audio: true});
+                classifier = ml5.soundClassifier('https://teachablemachine.withgoogle.com/models/QZ2m5r0hn/model.json', modelReady);                
+                console.log(classifier)
+            }   
+
+            function modelReady() 
+            {
+                classifier.classify(getResult);
+            }
+
+            function getResult(error, results) 
+            {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    console.log(results);
+                    random_number_r = Math.floor(Math.random() * 255) + 1;
+                    random_number_g = Math.floor(Math.random() * 255) + 1;
+                    random_number_b = Math.floor(Math.random() * 255) + 1;
+
+                    document.getElementById("result_label").innerHTML = 'I can hear a ' + 
+                    results[0].label;
+                    document.getElementById("result_confidence").innerHTML = 'Accuracy Percentage == ' + 
+                    (results[0].confidence*100).toFixed(2)+" %";
+                    document.getElementById("result_label").style.color = "rgb(" 
+                    +random_number_r+","+random_number_g+","+random_number_b+")";
+                    document.getElementById("result_confidence").style.color = "rgb(" 
+                    +random_number_r+","+random_number_g+","+random_number_b+")";
+
+                    img = document.getElementById('ear');
+
+
+                    if (results[0].label == "Roar") 
+                    {
+                        img.src = 'lion.png';
+
+                    }
+                    else if (results[0].label == "Meow") {
+                                            
+                        img.src = 'cat.png';
+
+                    }
+                    else if (results[0].label == "Bark") {
+                    
+                        img.src = 'dog.png';
+
+                    }
+                    else {
+                    
+                        img.src = 'ear.png';
+
+                    }
+                }
+            }
+            
+        </script>
+    </body>
+</html>
